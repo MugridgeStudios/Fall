@@ -76,7 +76,7 @@ function startGame() {
       score++;
       document.getElementById('score').innerText = "Score: " + score;
     }
-  }, 1000); // increase score once per second
+  }, 1000); 
 
   requestAnimationFrame(gameLoop);
 }
@@ -94,11 +94,15 @@ function drawBlocks() {
 }
 
 function drawPlayer() {
-  // Draw player on top of blocks
+  // Bright neon player with glow
   ctx.fillStyle = '#00ffff';
+  ctx.shadowColor = '#00ffff';
+  ctx.shadowBlur = 20;
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+  
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = 3;
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.shadowBlur = 0;
   ctx.strokeRect(player.x, player.y, player.width, player.height);
 }
 
@@ -130,8 +134,8 @@ function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   moveBlocks();
-  drawBlocks();    // draw blocks first
-  drawPlayer();    // draw player on top
+  drawBlocks();   
+  drawPlayer();  // Always on top with glow
   checkCollision();
   removeOffscreenBlocks();
 
