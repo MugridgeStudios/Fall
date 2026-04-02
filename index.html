@@ -18,6 +18,7 @@
       background: #222;
       margin-top: 20px;
       border-radius: 10px;
+      box-shadow: 0 0 10px #000;
     }
 
     #score {
@@ -54,6 +55,7 @@ let score = 0;
 let gameOver = false;
 let gameRunning = false;
 let spawnInterval;
+let scoreInterval;
 let animationFrame;
 
 function startGame() {
@@ -66,8 +68,16 @@ function startGame() {
 
   if (animationFrame) cancelAnimationFrame(animationFrame);
   if (spawnInterval) clearInterval(spawnInterval);
+  if (scoreInterval) clearInterval(scoreInterval);
 
   spawnInterval = setInterval(spawnBlock, 1000);
+  scoreInterval = setInterval(() => {
+    if(gameRunning) {
+      score++;
+      document.getElementById('score').innerText = "Score: " + score;
+    }
+  }, 1000); // increase score once per second
+
   requestAnimationFrame(gameLoop);
 }
 
@@ -79,8 +89,11 @@ function spawnBlock() {
 }
 
 function drawPlayer() {
-  ctx.fillStyle = '#00ffea';
+  ctx.fillStyle = '#00ffff';
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 3;
   ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.strokeRect(player.x, player.y, player.width, player.height);
 }
 
 function drawBlocks() {
@@ -101,6 +114,7 @@ function checkCollision() {
       gameOver = true;
       gameRunning = false;
       clearInterval(spawnInterval);
+      clearInterval(scoreInterval);
       alert("Game Over! Your score: " + score);
       return;
     }
@@ -111,11 +125,6 @@ function removeOffscreenBlocks() {
   blocks = blocks.filter(b => b.y < canvas.height);
 }
 
-function updateScore() {
-  score++;
-  document.getElementById('score').innerText = "Score: " + score;
-}
-
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -124,7 +133,6 @@ function gameLoop() {
   moveBlocks();
   checkCollision();
   removeOffscreenBlocks();
-  updateScore();
 
   if (gameRunning) animationFrame = requestAnimationFrame(gameLoop);
 }
